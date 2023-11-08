@@ -9,7 +9,7 @@ on:
 jobs:
 # safe tag에 대한 gradlew test && merged에 대한 docker image build and push
   CI:
-    if: contains(github.event.pull_request.labels.*.name, 'Depoly')
+    if: contains(github.event.pull_request.labels.*.name, 'Deploy')
     runs-on: ubuntu-20.04
 
     steps:
