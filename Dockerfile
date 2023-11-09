@@ -9,4 +9,4 @@ COPY . .
 
 RUN pip install gunicorn
 
-CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 Scrooge.wsgi:application"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn --bind 0.0.0.0:8000 Scrooge.wsgi:application"]
