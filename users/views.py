@@ -30,11 +30,7 @@ class JWTSignupView(APIView):
             res = Response(
                 {
                     "user": serializer.data,
-                    "message": "register successs",
-                    "token": {
-                        "access": access_token,
-                        "refresh": refresh_token,
-                    },
+                    "message": "register successs"
                 },
                 status=status.HTTP_200_OK,
             )        
@@ -95,11 +91,7 @@ class JWTLoginView(APIView):
             res = Response(
                 {
                     "user": serializer.data,
-                    "message": "login success",
-                    "token": {
-                        "access": access_token,
-                        "refresh": refresh_token,
-                    },
+                    "message": "login success"
                 },
                 status=status.HTTP_200_OK,
             )
