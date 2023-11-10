@@ -10,11 +10,27 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from django.http import Http404
+from rest_framework.decorators import action
+# 필터 전용 import
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
+from random import choice
+
 
 # 욕설 필터링 관련 import
 from django.conf import settings
 import os
+#===================================================================================================
+# 질문 필터링 class
+class QuestionFilter(filters.FilterSet):
+    # category별로 필터링 
+    category = filters.ChoiceFilter(choices=Question.CATEGORY_LIST)
+    class Meta:
+        model = Question
+        fields = ['category']
 
+#===================================================================================================
+# 욕설 필터링 관련 함수
 def load_swears(file_name):
     file_path = os.path.join(settings.BASE_DIR, 'static', file_name)
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -31,28 +47,34 @@ def censor_content(content):
             is_abused = True
             
     return content, is_abused
-
+#===================================================================================================
 class QuestionViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
-    # api/questoin/으로 GET 요청을 받을 시, 랜덤 질문 1개를 반환함
+    # api/question으로 GET 요청을 받을 시, 질문을 랜덤으로 반환함
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-    def list(self, request, *args, **kwargs):
-        # 랜덤으로 질문 1개를 불러옴
-        queryset = Question.objects.order_by('?')[:1]
+    @action(detail=False, methods=['GET'], url_path='past')
+    def past(self, request, *args, **kwargs):
+        queryset = Question.objects.filter(category = 'Past').order_by('?')[:1]
         serializer = QuestionSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def retrieve(self, request, *args, **kwargs):
-        # question id를 url에서 받아옴
-        question_id = self.kwargs['pk']
+    @action(detail=False, methods=['GET'], url_path='present')
+    def present(self, request, *args, **kwargs):
+        queryset = Question.objects.filter(category = 'Present').order_by('?')[:1]
+        serializer = QuestionSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['GET'], url_path='future')
+    def future(self, request, *args, **kwargs):
+        queryset = Question.objects.filter(category = 'Future').order_by('?')[:1]
+        serializer = QuestionSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
-        # question id에 해당하는 질문을 불러옴
-        queryset = Question.objects.filter(id=question_id)
-        serializer = QuestionSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-class AnswerListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+#===================================================================================================
+# 답변 list, create view set
+class AnswerListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
     # api/answer/<user_id>로 GET 요청을 받을 시, 답변 목록을 반환함
     queryset = Answer.objects.all()
     serializer_class = AnswerListSerializer
@@ -80,3 +102,4 @@ class AnswerCreateViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
 
         serializer.validated_data['content'] = content
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#===================================================================================================

@@ -15,7 +15,7 @@ question_router.register('question', QuestionViewSet)
 
 
 urlpatterns = [
-    path('question', include(question_router.urls)),
     path('', include(default_router.urls)),
-    path('', include(answer_router.urls)),
+    path('', include(question_router.urls)),
+    path('username/<int:id>', include(answer_router.urls)),
 ]
