@@ -143,6 +143,10 @@ class UserNameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+        
+        instance.view_cnt += 1
+        instance.save()
+        
         serializer = self.serializer_class(instance)
 
         return Response(serializer.data)
