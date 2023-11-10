@@ -10,7 +10,7 @@ COPY . .
 
 RUN python manage.py makemigrations &&\
     python manage.py makemigrations main &&\
-    python manage.py makemigrations users &&
+    python manage.py makemigrations users
 
 RUN python manage.py migrate
 
