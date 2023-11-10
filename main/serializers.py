@@ -4,9 +4,10 @@ from .models import *
 
 #===================================================================================================
 class AnswerListSerializer(serializers.ModelSerializer):
+    question_content = serializers.CharField(source='question.content', read_only=True)
     class Meta:
         model = Answer
-        fields = '__all__'
+        fields = ['id', 'to_user', 'writer', 'content', 'question', 'question_content', 'created_at']
 
 class AnswerCreateSerializer(serializers.ModelSerializer):
     class Meta:
