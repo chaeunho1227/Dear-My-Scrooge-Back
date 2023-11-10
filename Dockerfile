@@ -8,6 +8,8 @@ RUN pip install --upgrade pip &&\
 COPY . .
 
 RUN python manage.py makemigrations &&\
+    python manage.py makemigrations main &&\
+    python manage.py makemigrations users &&\
     python manage.py migrate && \
     pip install gunicorn
 
