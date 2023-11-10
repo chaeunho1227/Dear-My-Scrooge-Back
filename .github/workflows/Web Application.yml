@@ -21,6 +21,10 @@ jobs:
       run: |
         touch .env
         echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+        echo SECRET_KEY=${{ secrets.DJANGO_DEPLOY }} >> .env
+        echo SECRET_KEY=${{ secrets.POSTGRES_NAME }} >> .env
+        echo SECRET_KEY=${{ secrets.POSTGRES_USER }} >> .env
+        echo SECRET_KEY=${{ secrets.POSTGRES_PASSWORD }} >> .env
         cat .env
 
     - name: Set up Python 3.11
