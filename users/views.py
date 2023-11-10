@@ -112,7 +112,6 @@ class JWTLoginView(APIView):
         response.delete_cookie("refresh")
         return response
 
-
 class JWTRefreshView(APIView):
     def get(self, request):
         refresh_token = request.COOKIES.get('refresh')
