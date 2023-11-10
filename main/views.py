@@ -74,37 +74,35 @@ class QuestionViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Ret
 
 #===================================================================================================
 # 답변 list, create view set
-class AnswerListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
+class QuestionAnswerListViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin):
     # api/main/username/<int:id>/answer/past 로 GET 요청을 받을 시, 해당 유저의 답변 중 category가 past인 질문과 그 질문에 대한 답변을 반환함
     # answer들을 불러올 때 같은 question 에 대한 answer은 묶어서 보여줌
-
-    queryset = Answer.objects.all()
-    serializer_class = AnswerListSerializer
+    serializer_class = QuestionAnswerSerializer
 
     def get_queryset(self):
         to_user_id = self.kwargs['id']
-        queryset = Answer.objects.filter(to_user_id=to_user_id)
+        queryset = Question.objects.filter(answer__to_user_id=to_user_id)
         return queryset
     
     @action(detail=False, methods=['GET'], url_path='past')
     def past(self, request, *args, **kwargs):
-        to_user_id = self.kwargs['id']
-        queryset = Answer.objects.filter(to_user_id=to_user_id, question__category='Past')
-        serializer = AnswerListSerializer(queryset, many=True)
+        queryset = self.get_queryset()
+        queryset = queryset.filter(question__category='Past')
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['GET'], url_path='present')
     def present(self, request, *args, **kwargs):
-        to_user_id = self.kwargs['id']
-        queryset = Answer.objects.filter(to_user_id=to_user_id, question__category='Present')
-        serializer = AnswerListSerializer(queryset, many=True)
+        queryset = self.get_queryset()
+        queryset = queryset.filter(question__category='Present')
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['GET'], url_path='future')
     def future(self, request, *args, **kwargs):
-        to_user_id = self.kwargs['id']
-        queryset = Answer.objects.filter(to_user_id=to_user_id, question__category='Future')
-        serializer = AnswerListSerializer(queryset, many=True)
+        queryset = self.get_queryset()
+        queryset = queryset.filter(question__category='Future')
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AnswerCreateViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
