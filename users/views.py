@@ -133,3 +133,17 @@ class JWTRefreshView(APIView):
                 return res
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+#=========================================================
+
+from rest_framework import viewsets, mixins
+
+class UserNameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserNameSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.serializer_class(instance)
+
+        return Response(serializer.data)

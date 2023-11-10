@@ -71,3 +71,9 @@ class UserJWTLoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("user account not exist")
 
         return data
+
+class UserNameSerializer(serializers.ModelSerializer):
+
+        class Meta(object):
+            model = User
+            fields = ['id', 'nickname']
