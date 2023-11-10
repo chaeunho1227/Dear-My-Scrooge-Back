@@ -8,10 +8,4 @@ RUN pip install --upgrade pip &&\
 
 COPY . .
 
-RUN python manage.py makemigrations &&\
-    python manage.py makemigrations main &&\
-    python manage.py makemigrations users
-
-RUN python manage.py migrate
-
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:8000 Scrooge.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 Scrooge.wsgi:application"]
