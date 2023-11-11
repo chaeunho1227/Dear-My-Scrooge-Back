@@ -164,6 +164,7 @@ class UserNameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
                 now = datetime.now()
                 # 3시간 후의 시간
                 expires = now + timedelta(hours=3)
+                instance.view_cnt += 1
                 res.set_cookie("target_user_log_", user_id, expires=expires)
 
         instance.save()
