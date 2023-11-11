@@ -136,6 +136,7 @@ class JWTRefreshView(APIView):
 #=========================================================
 
 from rest_framework import viewsets, mixins
+from datetime import datetime, timedelta
 
 class UserNameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
     queryset = User.objects.all()
@@ -143,10 +144,30 @@ class UserNameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        
-        instance.view_cnt += 1
-        instance.save()
-        
-        serializer = self.serializer_class(instance)
+        user_id = print(kwargs['pk'])
+        target_user_log_ = request.COOKIES.get('target_user_log_')
+        res = Response()
 
-        return Response(serializer.data)
+        if target_user_log_ is None:
+            now = datetime.now()
+            
+            # 3시간 후의 시간
+            expires = now + timedelta(hours=3)
+
+            res.set_cookie("target_user_log_", user_id, expires=expires)
+            instance.view_cnt += 1
+
+        else:
+            if user_id == target_user_log_:
+                pass
+            else:
+                now = datetime.now()
+            
+                # 3시간 후의 시간
+                expires = now + timedelta(hours=3)
+                res.set_cookie("target_user_log_", user_id, expires=expires)
+
+        instance.save()
+        serializer = self.serializer_class(instance)
+        res.data = serializer.data
+        return res
