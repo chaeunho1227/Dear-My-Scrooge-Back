@@ -144,7 +144,7 @@ class UserNameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        user_id = print(kwargs['pk'])
+        user_id = kwargs['pk']
         target_user_log_ = request.COOKIES.get('target_user_log_')
         res = Response()
 
@@ -162,7 +162,6 @@ class UserNameViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
                 pass
             else:
                 now = datetime.now()
-            
                 # 3시간 후의 시간
                 expires = now + timedelta(hours=3)
                 res.set_cookie("target_user_log_", user_id, expires=expires)
