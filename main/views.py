@@ -117,5 +117,6 @@ class AnswerCreateViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         content, _ = censor_content(content)
 
         serializer.validated_data['content'] = content
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 #===================================================================================================
